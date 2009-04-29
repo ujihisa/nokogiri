@@ -103,6 +103,50 @@ static void start_element(void * ctx, const xmlChar *name, const xmlChar **atts)
   );
 }
 
+static void entity_declaration(void * ctx,
+    const xmlChar *name,
+    int type,
+    const xmlChar *publicId,
+    const xmlChar *systemId,
+    xmlChar *content)
+{
+  VALUE self = (VALUE)ctx;
+  VALUE MAYBE_UNUSED(enc) = rb_iv_get(self, "@encoding");
+  VALUE doc = rb_funcall(self, rb_intern("document"), 0);
+
+  char * MAYBE_UNUSED(encoding) = RTEST(enc) ? StringValuePtr(enc) : NULL;
+
+  rb_funcall(doc,
+      rb_intern("entity_declaration"),
+      5,
+      NOKOGIRI_STR_NEW2(name, enc),
+      INT2NUM(type),
+      publicId == NULL ? Qnil : NOKOGIRI_STR_NEW2(publicId, enc),
+      systemId == NULL ? Qnil : NOKOGIRI_STR_NEW2(systemId, enc),
+      content == NULL ? Qnil : NOKOGIRI_STR_NEW2(content, enc)
+  );
+}
+
+static void notation_declaration(void * ctx,
+    const xmlChar *name,
+    const xmlChar *publicId,
+    const xmlChar *systemId)
+{
+  VALUE self = (VALUE)ctx;
+  VALUE MAYBE_UNUSED(enc) = rb_iv_get(self, "@encoding");
+  VALUE doc = rb_funcall(self, rb_intern("document"), 0);
+
+  char * encoding = RTEST(enc) ? StringValuePtr(enc) : NULL;
+
+  rb_funcall(doc,
+      rb_intern("notation_declaration"),
+      3,
+      NOKOGIRI_STR_NEW2(name, enc),
+      publicId == NULL ? Qnil : NOKOGIRI_STR_NEW2(publicId, enc),
+      systemId == NULL ? Qnil : NOKOGIRI_STR_NEW2(systemId, enc)
+  );
+}
+
 static void end_element(void * ctx, const xmlChar *name)
 {
   VALUE self = (VALUE)ctx;
@@ -190,6 +234,8 @@ static VALUE allocate(VALUE klass)
 
   handler->startDocument = start_document;
   handler->endDocument = end_document;
+  handler->entityDecl = entity_declaration;
+  handler->notationDecl = notation_declaration;
   handler->startElement = start_element;
   handler->endElement = end_element;
   handler->characters = characters_func;

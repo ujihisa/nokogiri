@@ -119,6 +119,24 @@ module Nokogiri
         # +string+ contains the cdata content
         def cdata_block string
         end
+
+        ###
+        # Called when an entity declaration is encountered.
+        # +name+ is the entity name
+        # +type+ is the entity type
+        # +public_id+ is the public ID of the entity
+        # +system_id+ is the system ID of the entity
+        # +content+ is the entyti value (without processing)
+        def entity_declaration name, type, public_id, system_id, content
+        end
+
+        ###
+        # Called when a notation declaration is encountered.
+        # +name+ is the name of the notation
+        # +public_id+ is the public ID of the entity
+        # +system_id+ is the system ID of the entity
+        def notation_declaration name, public_id, system_id
+        end
       end
     end
   end

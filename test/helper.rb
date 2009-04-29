@@ -56,8 +56,22 @@ module Nokogiri
       class Doc < XML::SAX::Document
         attr_reader :start_elements, :start_document_called
         attr_reader :end_elements, :end_document_called
-        attr_reader :data, :comments, :cdata_blocks
-        attr_reader :errors, :warnings
+        attr_reader :data, :comments, :cdata_blocks, :entity_declarations
+        attr_reader :errors, :warnings, :notation_declarations
+
+        def initialize
+          @start_document_called = nil
+          @end_document_called = nil
+          @errors = []
+          @warning = []
+          @start_elements = []
+          @end_elements = []
+          @data = []
+          @comments = []
+          @cdata_blocks = []
+          @entity_declarations = []
+          @notation_declarations = []
+        end
 
         def start_document
           @start_document_called = true
@@ -70,40 +84,47 @@ module Nokogiri
         end
 
         def error error
-          (@errors ||= []) << error
+          @errors << error
           super
         end
 
         def warning warning
-          (@warning ||= []) << warning
+          @warning << warning
           super
         end
 
         def start_element *args
-          (@start_elements ||= []) << args
+          @start_elements << args
           super
         end
 
         def end_element *args
-          (@end_elements ||= []) << args
+          @end_elements << args
           super
         end
 
         def characters string
-          @data ||= []
           @data += [string]
           super
         end
 
         def comment string
-          @comments ||= []
           @comments += [string]
           super
         end
 
         def cdata_block string
-          @cdata_blocks ||= []
           @cdata_blocks += [string]
+          super
+        end
+
+        def entity_declaration name, type, public_id, system_id, content
+          @entity_declarations << [name, type, public_id, system_id, content]
+          super
+        end
+
+        def notation_declaration name, public_id, system_id
+          @notation_declarations << [name, public_id, system_id]
           super
         end
       end

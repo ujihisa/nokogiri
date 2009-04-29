@@ -9,6 +9,24 @@ module Nokogiri
           @parser = XML::SAX::Parser.new(Doc.new)
         end
 
+        def test_entity_declaration
+          File.open(XML_FILE, 'rb') { |f|
+            @parser.parse(f)
+          }
+          assert_equal 5, @parser.document.entity_declarations.length
+          assert_equal %w{ ent1 ent2 ent3 ent4 ent1 },
+            @parser.document.entity_declarations.map { |x| x.first }
+        end
+
+        def test_notation_declaration
+          File.open(XML_FILE, 'rb') { |f|
+            @parser.parse(f)
+          }
+          assert_equal 2, @parser.document.notation_declarations.length
+          assert_equal %w{ notation1 notation2 },
+            @parser.document.notation_declarations.map { |x| x.first }
+        end
+
         def test_bad_document_calls_error_handler
           @parser.parse('<foo><bar></foo>')
           assert @parser.document.errors
