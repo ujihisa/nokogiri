@@ -137,6 +137,17 @@ module Nokogiri
         # +system_id+ is the system ID of the entity
         def notation_declaration name, public_id, system_id
         end
+
+        ###
+        # Called when an attribute declaration is parsed
+        # +element_name+ is the name of the element
+        # +attribute_name+ is the name of the attribute declared
+        # +type+ is the type of attribute
+        # +default_type+ is the default value type for the attribute
+        # +default_value+ is the default value for the attribute
+        # +value_set+ is a list of possible values (may be empty)
+        def attribute_declaration element_name, attribute_name, type, default_type, default_value, value_set
+        end
       end
     end
   end

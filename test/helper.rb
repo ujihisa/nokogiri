@@ -58,6 +58,7 @@ module Nokogiri
         attr_reader :end_elements, :end_document_called
         attr_reader :data, :comments, :cdata_blocks, :entity_declarations
         attr_reader :errors, :warnings, :notation_declarations
+        attr_reader :attribute_declarations
 
         def initialize
           @start_document_called = nil
@@ -71,6 +72,7 @@ module Nokogiri
           @cdata_blocks = []
           @entity_declarations = []
           @notation_declarations = []
+          @attribute_declarations = []
         end
 
         def start_document
@@ -125,6 +127,11 @@ module Nokogiri
 
         def notation_declaration name, public_id, system_id
           @notation_declarations << [name, public_id, system_id]
+          super
+        end
+
+        def attribute_declaration *args
+          @attribute_declarations << args
           super
         end
       end

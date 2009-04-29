@@ -27,6 +27,20 @@ module Nokogiri
             @parser.document.notation_declarations.map { |x| x.first }
         end
 
+        def test_attribute_declaration
+          @parser.parse(<<-eoxml)
+<?xml version="1.0"?>
+<!DOCTYPE staff SYSTEM "staff.dtd" [
+   <!ELEMENT payment EMPTY>
+   <!ATTLIST payment type (cash|check) "cash">
+]>
+<staff />
+          eoxml
+          assert_equal 1, @parser.document.attribute_declarations.length
+          assert_equal ["payment", "type", 9, 1, "cash", ["cash", "check"]],
+            @parser.document.attribute_declarations.first
+        end
+
         def test_bad_document_calls_error_handler
           @parser.parse('<foo><bar></foo>')
           assert @parser.document.errors
