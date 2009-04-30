@@ -24,7 +24,7 @@ module Nokogiri
       def parse string
         Stylesheet.parse_stylesheet_doc(XML.parse(string))
       end
-      
+
       ###
       # Quote parameters in +params+ for stylesheet safety
       def quote_params params
