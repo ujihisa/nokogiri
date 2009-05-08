@@ -58,7 +58,7 @@ module Nokogiri
         attr_reader :end_elements, :end_document_called
         attr_reader :data, :comments, :cdata_blocks, :entity_declarations
         attr_reader :errors, :warnings, :notation_declarations
-        attr_reader :attribute_declarations
+        attr_reader :attribute_declarations, :internal_subsets
 
         def initialize
           @start_document_called = nil
@@ -73,6 +73,7 @@ module Nokogiri
           @entity_declarations = []
           @notation_declarations = []
           @attribute_declarations = []
+          @internal_subsets = []
         end
 
         def start_document
@@ -132,6 +133,11 @@ module Nokogiri
 
         def attribute_declaration *args
           @attribute_declarations << args
+          super
+        end
+
+        def internal_subset name, external_id, system_id
+          @internal_subsets << [name, external_id, system_id]
           super
         end
       end

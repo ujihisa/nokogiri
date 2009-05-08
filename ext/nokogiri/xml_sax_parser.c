@@ -253,6 +253,26 @@ static void attribute_declaration(void * ctx,
   );
 }
 
+static void internal_subset(void * ctx,
+    const xmlChar *name,
+    const xmlChar *externalId,
+    const xmlChar *systemId)
+{
+  VALUE self = (VALUE)ctx;
+  VALUE MAYBE_UNUSED(enc) = rb_iv_get(self, "@encoding");
+  VALUE doc = rb_funcall(self, rb_intern("document"), 0);
+
+  char * MAYBE_UNUSED(encoding) = RTEST(enc) ? StringValuePtr(enc) : NULL;
+
+  rb_funcall(doc,
+      rb_intern("internal_subset"),
+      3,
+      NOKOGIRI_STR_NEW2(name, encoding),
+      externalId == NULL ? Qnil : NOKOGIRI_STR_NEW2(externalId, encoding),
+      systemId == NULL ? Qnil : NOKOGIRI_STR_NEW2(systemId, encoding)
+  );
+}
+
 static void deallocate(xmlSAXHandlerPtr handler)
 {
   NOKOGIRI_DEBUG_START(handler);
@@ -276,6 +296,7 @@ static VALUE allocate(VALUE klass)
   handler->warning = warning_func;
   handler->error = error_func;
   handler->cdataBlock = cdata_block;
+  handler->internalSubset = internal_subset;
 
   return Data_Wrap_Struct(klass, NULL, deallocate, handler);
 }

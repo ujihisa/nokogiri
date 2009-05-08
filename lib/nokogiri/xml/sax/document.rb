@@ -148,6 +148,14 @@ module Nokogiri
         # +value_set+ is a list of possible values (may be empty)
         def attribute_declaration element_name, attribute_name, type, default_type, default_value, value_set
         end
+
+        ###
+        # Called when parsing an internal subset declaration
+        # +name+ is the root element name
+        # +external_id+ is the external id
+        # +system_id+ is the system id, filename or URL
+        def internal_subset name, external_id, system_id
+        end
       end
     end
   end

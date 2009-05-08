@@ -9,6 +9,12 @@ module Nokogiri
           @parser = XML::SAX::Parser.new(Doc.new)
         end
 
+        def test_internal_subset
+          File.open(XML_FILE, 'rb') { |f| @parser.parse(f) }
+          assert_equal ['staff', nil, 'staff.dtd'],
+            @parser.document.internal_subsets.first
+        end
+
         def test_entity_declaration
           File.open(XML_FILE, 'rb') { |f|
             @parser.parse(f)
